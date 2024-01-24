@@ -1,13 +1,11 @@
+from src import item
 from src.item import Item
 
 
 """Здесь надо написать тесты с использованием pytest для модуля item."""
 
-def test_calculate_total_price():
-    item = Item(name="Test Item", price=10.0, quantity=5)
-    total_price = item.calculate_total_price()
-    expected_price = 10.0 * 5
-    assert total_price == expected_price
+def test_calculate_total_price(self, total_price=None):
+    assert total_price == self.quantity * self.price
     assert item in Item.all
 
 def test_apply_discount():
