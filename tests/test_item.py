@@ -1,18 +1,20 @@
 from src import item
 from src.item import Item
 
-
 """Здесь надо написать тесты с использованием pytest для модуля item."""
+
 
 def test_calculate_total_price(self, total_price=None):
     assert total_price == self.quantity * self.price
     assert item in Item.all
+
 
 def test_apply_discount():
     item = Item(name="Test Item", price=10.0, quantity=5)
     item.apply_discount()
     discounted_price = 10.0 * item.pay_rate
     assert item.price == discounted_price
+
 
 def test_apply_discount_multiple_items():
     item1 = Item(name="Item 1", price=10.0, quantity=3)
@@ -23,5 +25,3 @@ def test_apply_discount_multiple_items():
     assert item1.price == discounted_price_item1
 
     assert item2.price == 15.0  # apply_discount не должен влиять на другие товары
-
-
