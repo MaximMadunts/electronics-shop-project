@@ -36,3 +36,6 @@ def test_apply_discount_multiple_items():
     assert item1.price == discounted_price_item1
 
     assert item2.price == 15.0  # apply_discount не должен влиять на другие товары
+
+def test_instantiate_from_csv():
+    instantiate_from_csv(fp)
