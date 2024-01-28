@@ -43,15 +43,20 @@ class Item:
         """
         self.price *= self.pay_rate
 
-    @staticmethod
-    def instantiate_from_csv(fp):
-        with open(fp, newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            next(reader, None)
-            for row in reader:
-                Item.all.append(row)
+    def instantiate_from_csv(file_path):
+        with open(file_path, 'r') as csvfile:
+            csvreader = csv.DictReader(csvfile)
+            # header = next(csvreader)  # Пропускаем заголовок
+            for row in csvreader:
+                # name, price, quantity = row
+                # Item(name, price, quantity)
+                Item(row['name'], row['price'], row['quantity'])
+                print(row)
 
-    @staticmethod
+    @classmethod
+    def print_all(cls):
+        for row in cls.all:
+            print(f"name: {row.name}, price: {row.price}, quantity: {row.quantity}")
+
     def string_to_number(s):
         return int(float(s))
-
