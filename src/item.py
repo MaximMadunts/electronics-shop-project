@@ -16,6 +16,7 @@ class Item:
         self._name = name
         self.price = price
         self.quantity = quantity
+        Item.all.append(self)
 
     @property
     def name(self):
@@ -45,10 +46,10 @@ class Item:
     @staticmethod
     def instantiate_from_csv(fp):
         with open(fp, newline='') as csvfile:
-            reader = csv.reader(csvfile)
+            reader = csv.DictReader(csvfile)
             next(reader, None)
             for row in reader:
-                Item.all.append(Item(name=row[0], price=float(row[1]), quantity=int(row[2])))
+                Item.all.append(row)
 
     @staticmethod
     def string_to_number(s):
