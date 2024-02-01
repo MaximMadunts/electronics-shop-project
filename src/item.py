@@ -1,4 +1,5 @@
 import csv
+import os.path
 
 
 class Item:
@@ -13,21 +14,24 @@ class Item:
             Создание экземпляра класса item.
         """
 
-        self._name = name
+        self.__name = name
         self.price = price
         self.quantity = quantity
         Item.all.append(self)
 
+
     @property
     def name(self):
-        return self._name
+        return self.__name
 
     @name.setter
     def name(self, value):
         if len(value) > 10:
-            self._name = value[:11]
+            self.__name = value[:10]
+
         else:
-            self._name = value
+            self.__name = value
+
 
     def calculate_total_price(self) -> float:
         """
@@ -43,15 +47,22 @@ class Item:
         """
         self.price *= self.pay_rate
 
-    def instantiate_from_csv(file_path):
-        with open(file_path, 'r') as csvfile:
+    @classmethod
+    def instantiate_from_csv(cls, file_path):
+        '''
+        Инициализирует экземпляр класса Item данными из файла src/items.csv
+        '''
+        cls.all.clear()
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'src', 'items.csv')
+
+        with open(file_path, 'r', newline='') as csvfile:
             csvreader = csv.DictReader(csvfile)
             # header = next(csvreader)  # Пропускаем заголовок
             for row in csvreader:
                 # name, price, quantity = row
                 # Item(name, price, quantity)
-                Item(row['name'], row['price'], row['quantity'])
-                print(row)
+                cls(row['name'], row['price'], row['quantity'])
+
 
     @classmethod
     def print_all(cls):
@@ -60,3 +71,4 @@ class Item:
 
     def string_to_number(s):
         return int(float(s))
+
