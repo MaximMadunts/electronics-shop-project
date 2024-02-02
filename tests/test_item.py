@@ -40,3 +40,18 @@ def test_apply_discount_multiple_items():
     assert item2.price == 15.0  # apply_discount не должен влиять на другие товары
 
 
+def test_string_to_number():
+    assert Item.string_to_number('5') == 5
+    assert Item.string_to_number('5.0') == 5
+    assert Item.string_to_number('5.5') == 5
+
+
+def test___repr__():
+    item1 = Item("Ноутбук", 50000, 2)
+    assert repr(item1) == "Item('Ноутбук', 50000, 2)"
+    assert str(item1) == 'Ноутбук'
+
+
+def test___str__():
+    item1 = Item("Ноутбук", 50000, 2)
+    assert str(item1) == 'Ноутбук'
