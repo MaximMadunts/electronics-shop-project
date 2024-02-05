@@ -1,5 +1,6 @@
 import os
 
+from src import item
 from src.item import Item
 
 """Здесь надо написать тесты с использованием pytest для модуля item."""
@@ -44,6 +45,8 @@ def test_string_to_number():
     assert Item.string_to_number('5') == 5
     assert Item.string_to_number('5.0') == 5
     assert Item.string_to_number('5.5') == 5
+    assert Item.string_to_number('10') == 10
+    assert Item.string_to_number('10.5') == 10.5
 
 
 def test___repr__():

@@ -1,5 +1,6 @@
 import csv
 import os.path
+from pathlib import Path
 
 
 class Item:
@@ -52,8 +53,9 @@ class Item:
         '''
         cls.all = []
         # file_path = os.path.join(os.path.dirname(__file__), '..', 'src', 'items.csv')
-
-        with open(file_path, 'r', newline='', encoding="windows-1251") as csvfile:
+        BASE_DIR = Path(__file__).resolve().parent.parent
+        file = BASE_DIR / file_path
+        with open(file, 'r', newline='', encoding="windows-1251") as csvfile:
             csvreader = csv.DictReader(csvfile)
             # header = next(csvreader)  # Пропускаем заголовок
             for row in csvreader:
@@ -61,12 +63,13 @@ class Item:
 
 
     @staticmethod
-    def string_to_number(s):
-        """
-        Возвращает число из числа-строки
-        """
-        number = float(s)
-        return int(number)
+    def string_to_number(num_str):
+        ''' Возвращает число '''
+        float_num = float(num_str)
+        int_num = int(float_num)
+        if int_num != float_num:
+            return float_num
+        return int_num
 
     def __repr__(self):
         """
