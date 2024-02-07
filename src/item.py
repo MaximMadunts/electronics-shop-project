@@ -1,5 +1,6 @@
 import csv
 import os.path
+import pathlib
 from pathlib import Path
 
 
@@ -7,7 +8,7 @@ class Item:
     """
     Класс для представления товара в магазине.
     """
-    pay_rate = 0.85
+    pay_rate = 1.0
     all = []
 
     def __init__(self, name: str, price: float, quantity: int) -> None:
@@ -32,55 +33,57 @@ class Item:
         """
         Применяет установленную скидку для конкретного товара.
         """
-        self.price *= self.pay_rate
+        self.price = self.price * self.pay_rate
 
     @property
     def name(self):
         return self.__name
 
     @name.setter
-    def name(self, name):
-        if len(name) > 10:
-            self.__name = name[:10]
+    def name(self, value):
+        """
+        Проверяет, что длина наименования товара не больше 10 симвовов.
+        В противном случае,
+        обрезать строку (оставить первые 10 символов)
+        """
+        if len(value) <= 10:
+            self.__name = value
 
         else:
-            self.__name = name
+            self.__name = value[:10]
 
     @classmethod
     def instantiate_from_csv(cls, file_path):
         '''
         Инициализирует экземпляр класса Item данными из файла src/items.csv
         '''
-        cls.all = []
-        # file_path = os.path.join(os.path.dirname(__file__), '..', 'src', 'items.csv')
-        BASE_DIR = Path(__file__).resolve().parent.parent
-        file = BASE_DIR / file_path
-        with open(file, 'r', newline='', encoding="windows-1251") as csvfile:
+        cls.all.clear()
+        file_path = os.path.join(os.path.dirname(__file__), file_path)
+        with open(file_path, 'r', newline='', encoding='windows-1251') as csvfile:
             csvreader = csv.DictReader(csvfile)
-            # header = next(csvreader)  # Пропускаем заголовок
             for row in csvreader:
-                cls(str(row["name"]), float(row["price"]), int(row["quantity"]))
-
+                name = row['name']
+                price = cls.string_to_number(row['price'])
+                quantity = cls.string_to_number(row['quantity'])
+                cls(name, price, quantity)
 
     @staticmethod
     def string_to_number(num_str):
         ''' Возвращает число '''
         float_num = float(num_str)
         int_num = int(float_num)
-        if int_num != float_num:
-            return float_num
+        if float_num != int_num:
+            return int_num
         return int_num
 
-    def __repr__(self):
-        """
-        ___repr___
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}('{self.name}', {self.price}, {self.quantity})"
 
-        """
-        return f"Item('{self.__name}', {self.price}, {self.quantity})"
+    def __str__(self) -> str:
+        return f'{self.name}'
 
-    def __str__(self):
-        """
-        __str___
-
-        """
-        return self.__name
+    def __add__(self, other):
+        if isinstance(other, Item):
+            return self.quantity + other.quantity
+        else:
+            raise TypeError("Unsupported operand type. You can only add Item instances.")
