@@ -1,7 +1,15 @@
 import csv
-import os.path
-import pathlib
-from pathlib import Path
+import os
+
+
+class InstantiateCSVError(Exception):
+    def __init__(self, *args, **kwargs):
+        self.massage = "Файл item.csv поврежден"
+
+
+class FileNotFoundError(Exception):
+    def __init__(self, *args, **kwargs):
+        self.massage = "Отсутствует файл item.csv"
 
 
 class Item:
@@ -13,21 +21,25 @@ class Item:
 
     def __init__(self, name: str, price: float, quantity: int) -> None:
         """
-            Создание экземпляра класса item.
-        """
+        Создание экземпляра класса item.
 
+        :param name: Название товара.
+        :param price: Цена за единицу товара.
+        :param quantity: Количество товара в магазине.
+        """
         self.__name = name
         self.price = price
-        self.quantity = quantity
+        self. quantity = quantity
         Item.all.append(self)
 
     def calculate_total_price(self) -> float:
         """
         Рассчитывает общую стоимость конкретного товара в магазине.
 
+        :return: Общая стоимость товара.
         """
-        full_price = self.price * self.quantity
-        return full_price
+        cost_product = self.price * self.quantity
+        return cost_product
 
     def apply_discount(self) -> None:
         """
@@ -48,9 +60,10 @@ class Item:
         """
         if len(value) <= 10:
             self.__name = value
-
+            print(f'Корректное название - {value}')
         else:
             self.__name = value[:10]
+            print(f'Длинное слово - {value[:10]}')
 
     @classmethod
     def instantiate_from_csv(cls, file_path):
@@ -68,13 +81,11 @@ class Item:
                 cls(name, price, quantity)
 
     @staticmethod
-    def string_to_number(num_str):
-        ''' Возвращает число '''
-        float_num = float(num_str)
-        int_num = int(float_num)
-        if float_num != int_num:
-            return int_num
-        return int_num
+    def string_to_number(name):
+        """
+        Статический метод, возвращающий число из числа-строки
+        """
+        return int(float(name))
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}('{self.name}', {self.price}, {self.quantity})"
@@ -83,7 +94,10 @@ class Item:
         return f'{self.name}'
 
     def __add__(self, other):
+        """
+        Реализация возможности сложения экземпляров класса `Phone` и `Item`
+        (сложение по количеству товара в магазине)
+        """
         if isinstance(other, Item):
             return self.quantity + other.quantity
-        else:
-            raise TypeError("Unsupported operand type. You can only add Item instances.")
+        return ValueError("Складывать можно только объекты классов с родительским классом Item")

@@ -1,23 +1,38 @@
+import pytest
 from src.phone import Phone
 
 
-def test_phone_creation():
-    phone = Phone("Samsung Galaxy", 80000, 3, 1)
-    assert phone.name == "Samsung Galaxy"
-    assert phone.price == 80000
-    assert phone.quantity == 3
-    assert phone.number_of_sim == 1
+@pytest.fixture
+def phone():
+    phone = Phone("iPhone 14", 120_000, 5, 2)
+    return phone
 
 
-def test_phone_representation():
-    phone = Phone("Samsung Galaxy", 80000, 3, 1)
-    assert repr(phone) == "Phone('Samsung Galaxy', 80000, 3, 1)"
-    assert str(phone) == "Samsung Galaxy"
+def test___init__(phone):
+    assert phone.name == "iPhone 14"
+    assert phone.price == 120_000
+    assert phone.quantity == 5
+    assert phone.number_of_sim == 2
 
 
-def test_phone_addition():
+def test_repr():
     phone1 = Phone("iPhone 14", 120_000, 5, 2)
-    phone2 = Phone("Samsung Galaxy", 80_000, 3, 1)
-    result = phone1 + phone2
-    assert result == 8
+    assert repr(phone1) == "Phone('iPhone 14', 120000, 5, 2)"
 
+
+def test_str():
+    phone1 = Phone("iPhone 14", 120000, 5, 2)
+    assert str(phone1) == 'iPhone 14'
+
+
+@pytest.fixture
+def testing_data():
+    phone = Phone("iPhone 14", 120_000, 5, 2)
+    return testing_data
+
+
+def test_number_of_sim(testing_data):
+    with pytest.raises(ValueError):
+        testing_data.number_of_sim = -1
+        testing_data.number_of_sim = 0
+        testing_data.number_of_sim = 1.2

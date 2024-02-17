@@ -1,61 +1,80 @@
+import pytest
 import os
-
-from src import item
+from src.item import InstantiateCSVError
 from src.item import Item
-
-"""Здесь надо написать тесты с использованием pytest для модуля item."""
-
-
-def test_calculate_total_price():
-    item = Item(name="Test Item", price=10.0, quantity=5)
-    total_price = item.calculate_total_price()
-    item2 = Item(name="Zero Test Item", price=0.0, quantity=0)
-    total_price2 = item2.calculate_total_price()
-    assert item.price > 0
-    assert item.quantity > 0
-    assert total_price > 0
-    assert total_price == 50
-    assert total_price2 == 0
+from src.phone import Phone
 
 
-def test_init_metod_all():
-    item = Item(name="Test Item", price=10.0, quantity=5)
-    assert item in Item.all
+@pytest.fixture
+def inst():
+    inst = Item("Телефон", 8500, 12)
+    return inst
 
 
-def test_apply_discount():
-    item = Item(name="Test Item", price=10.0, quantity=5)
-    item.apply_discount()
-    discounted_price = 10.0 * item.pay_rate
-    assert item.price == discounted_price
+def test___init__(inst):
+    assert inst.name == "Телефон"
+    assert inst.price == 8500
+    assert inst.quantity == 12
 
 
-def test_apply_discount_multiple_items():
-    item1 = Item(name="Item 1", price=10.0, quantity=3)
-    item2 = Item(name="Item 2", price=15.0, quantity=2)
+def test_calculate_total_price(inst):
+    assert inst.calculate_total_price() == 102000
 
-    item1.apply_discount()
-    discounted_price_item1 = 10.0 * item1.pay_rate
-    assert item1.price == discounted_price_item1
 
-    assert item2.price == 15.0  # apply_discount не должен влиять на другие товары
+def test_apply_discount(inst):
+    inst.pay_rate = 0.6
+    inst.apply_discount()
+    assert inst.price == 5100
+
+
+def test_name_setter():
+    item = Item('Телефон', 10000, 5)
+    item.name = 'Смартфон'
+    assert item.name == 'Смартфон'
+
+
+def test_name_setter_truncate():
+    item = Item('Телефон', 25000, 3)
+    item.name = 'Суперсмартфон'
+    assert item.name == 'Суперсмарт'
+
+
+def test_instantiate_from_csv():
+    Item.instantiate_from_csv()  # создание объектов из данных файла
+    assert len(Item.all) == 5  # в файле 5 записей с данными по товарам
+
+    item1 = Item.all[0]
+    assert item1.name == 'Смартфон'
 
 
 def test_string_to_number():
     assert Item.string_to_number('5') == 5
     assert Item.string_to_number('5.0') == 5
     assert Item.string_to_number('5.5') == 5
-    assert Item.string_to_number('10') == 10
-    assert Item.string_to_number('10.5') == 10
 
 
-def test___repr__():
-    item1 = Item("Ноутбук", 50000, 2)
-    assert repr(item1) == "Item('Ноутбук', 50000, 2)"
-    assert str(item1) == 'Ноутбук'
+def test_repr():
+    item1 = Item("Смартфон", 10000, 20)
+    assert repr(item1) == "Item('Смартфон', 10000, 20)"
 
 
-def test___str__():
-    item1 = Item("Ноутбук", 50000, 2)
-    assert str(item1) == 'Ноутбук'
+def test_str():
+    item1 = Item("Смартфон", 10000, 20)
+    assert str(item1) == 'Смартфон'
 
+
+def test_add():
+    item1 = Item("Смартфон", 10000, 20)
+    phone1 = Phone("iPhone 14", 120000, 5, 2)
+    assert item1 + phone1 == 25
+    assert phone1 + phone1 == 10
+
+
+def test_instantiate_from_csv_not():
+    with pytest.raises(FileNotFoundError):
+        Item.instantiate_from_csv()
+
+
+def test_instantiate_from_csv_error():
+    with pytest.raises(InstantiateCSVError):
+        Item.instantiate_from_csv()

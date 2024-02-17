@@ -22,27 +22,13 @@ class LanguageMixin:
 
 
 class Keyboard(Item, LanguageMixin):
-    @property
-    def language(self):
-        return self._language
+    def __init__(self, name: str, price: float, quantity: int):
+        """
+        Создание экземпляра класса Keyboard.
 
-    def __init__(self, name: str, price: float, quantity: int) -> None:
+        :param name: Название товара.
+        :param price: Цена за единицу товара.
+        :param quantity: Количество товара в магазине.
+        """
         super().__init__(name, price, quantity)
         LanguageMixin.__init__(self)
-    #     self._language = 'EN'
-    #
-    # @property
-    # def language(self):
-    #     return self._language
-    #
-    # def __repr__(self):
-    #     return f"Keyboard('{self.name}', {self.price}, {self.quantity})"
-    #
-    # def change_lang(self):
-    #     if self._language == 'EN':
-    #         self._language = 'RU'
-    #     else:
-    #         self._language = 'EN'
-    @language.setter
-    def language(self, value):
-        self._language = value
