@@ -66,12 +66,20 @@ class Item:
             print(f'Длинное слово - {value[:10]}')
 
     @classmethod
-    def instantiate_from_csv(cls, file_path):
+    def instantiate_from_csv(cls):
         '''
         Инициализирует экземпляр класса Item данными из файла src/items.csv
         '''
-        cls.all.clear()
-        file_path = os.path.join(os.path.dirname(__file__), file_path)
+        """
+        Класс-метод, инициализирующий экземпляры класса `Item`
+        данными из файла _src/items.csv_
+        """
+        if not os.path.join(os.path.dirname(__file__), 'items.csv'):
+            raise FileNotFoundError("Отсутствует файл item.csv")
+        else:
+            cls.all.clear()
+
+        file_path = os.path.join(os.path.dirname(__file__), 'items.csv')
         with open(file_path, 'r', newline='', encoding='windows-1251') as csvfile:
             csvreader = csv.DictReader(csvfile)
             for row in csvreader:
