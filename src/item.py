@@ -1,5 +1,6 @@
 import csv
 import os
+from typing import Type
 
 
 class InstantiateCSVError(Exception):
@@ -29,7 +30,7 @@ class Item:
         """
         self.__name = name
         self.price = price
-        self. quantity = quantity
+        self.quantity = quantity
         Item.all.append(self)
 
     def calculate_total_price(self) -> float:
@@ -70,23 +71,20 @@ class Item:
         '''
         Инициализирует экземпляр класса Item данными из файла src/items.csv
         '''
-        """
-        Класс-метод, инициализирующий экземпляры класса `Item`
-        данными из файла _src/items.csv_
-        """
-        if not os.path.join(os.path.dirname(__file__), 'items.csv'):
-            raise FileNotFoundError("Отсутствует файл item.csv")
-        else:
-            cls.all.clear()
 
+        cls.all.clear()
         file_path = os.path.join(os.path.dirname(__file__), 'items.csv')
-        with open(file_path, 'r', newline='', encoding='windows-1251') as csvfile:
-            csvreader = csv.DictReader(csvfile)
-            for row in csvreader:
-                name = row['name']
-                price = cls.string_to_number(row['price'])
-                quantity = cls.string_to_number(row['quantity'])
-                cls(name, price, quantity)
+        try:
+            with open(file_path, 'r', newline='', encoding='windows-1251') as csvfile:
+                csvreader = csv.DictReader(csvfile)
+                for row in csvreader:
+                    cls(str(row['name']), float(row['price']), int(row['quantity']))
+
+        except FileNotFoundError:
+            raise FileNotFoundError
+        except KeyError:
+            raise InstantiateCSVError
+
 
     @staticmethod
     def string_to_number(name):

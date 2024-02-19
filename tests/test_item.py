@@ -70,11 +70,21 @@ def test_add():
     assert phone1 + phone1 == 10
 
 
-def test_instantiate_from_csv_not():
+def test_instantiate_from_csv_not_file():
+    """
+    Отсутствие файла
+    """
+    relative_path = "src/item1.csv"
+    file_path = os.path.abspath(relative_path)
     with pytest.raises(FileNotFoundError):
-        Item.instantiate_from_csv()
+        Item.instantiate_from_csv(file_path)
 
 
-def test_instantiate_from_csv_error():
+def test_instantiate_from_csv_bad_file():
+    """
+    Поврежденный файл
+    """
+    relative_path = "src/item2.csv"
+    file_path = os.path.abspath(relative_path)
     with pytest.raises(InstantiateCSVError):
-        Item.instantiate_from_csv()
+        Item.instantiate_from_csv(file_path)
